@@ -2,6 +2,8 @@
 // ===== MAIN FUNCTIONALITY ===== //
 // ============================== //
 
+var myURL = "";
+
 // change to current page on different site (same tab)
 function switchPage(event) {
 	let targetSite = event.target.value;//event.target.parentNode.value;
@@ -51,16 +53,17 @@ function getDestination(targetSite) {
 function getCurrentURL() {
 	var result = "";
 	chrome.tabs.query({
-							  active: true,
-							  currentWindow: true
-							}, function(tabs) {
-								  var tab = tabs[0];
-								  result = tab.url;
-								  console.log(result);
-								  //var url = tab.url;
-								});
+						  active: true,
+						  currentWindow: true
+						}, function(tabs) {
+							  var tab = tabs[0];
+							  myURL = tab.url;
+							  //console.log(result);
+							  //var url = tab.url;
+							});
 
-	result = chrome.extension.getBackgroundPage().myURL;
+	//result = chrome.extension.getBackgroundPage().myURL;
+	result = myURL;
 	return result;
 	//window.location.href;
 }
