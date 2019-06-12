@@ -1,0 +1,15 @@
+{
+	"name": "DOTA 2 Stat Switcher",
+	"description": "Switch between dota stat site pages",
+	"version": "0.1",
+	"permissions": ["storage", "tabs"],
+	"background": {
+	    "scripts": ["background.js"],
+	    "persistent": false
+	  },
+	"browser_action": {
+		"default_title": "Dota Stat Switcher",
+		"default_popup": "popup.html"
+  	},
+  	"manifest_version": 2
+}
