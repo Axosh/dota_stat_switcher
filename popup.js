@@ -70,25 +70,56 @@ function getDestination(targetSite) {
 
 	if (isPlayerPage(currentPage))
 	{
-		// do special conversions for steam
-		if(targetSite == ID_STEAM) {
+		if(isPlayerHeroStatsPage(currentPage))
+			result = playerHeroStatsPageLogic(currentPage, targetSite, currSite);
+		else
+			result = playerPageLogic(currentPage, targetSite, currSite);
+	}
+
+	return result;
+}
+
+function playerPageLogic(currentPage, targetSite, currSite) {
+	result = currentPage;
+	// do special conversions for steam
+	if(targetSite == ID_STEAM) {
+		id = getPlayerID(currentPage, currSite);
+		steamid3 = steamID64_From_SteamID3(id);
+		result = 'https://steamcommunity.com/profiles/' + String(steamid3);
+	}
+	else if (currSite == ID_STEAM) {
+		steam_id3 = steamID3_From_SteamID64(currentPage);
+		if (String(steam_id3).indexOf('-') >= 0)
+			result = currentPage;
+		else
+			result = "http://www." + getPlayerPredicate(targetSite) + steam_id3;
+	}
+	else
+		result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
+
+	return result;
+} // end playerPageLogic()
+
+function playerHeroStatsPageLogic(currentPage, targetSite, currSite) {
+	result = currentPage;
+
+	if(targetSite == ID_STEAM)
+		return result;
+	else {
+		if(targetSite == ID_DOTAMAX) {
 			id = getPlayerID(currentPage, currSite);
-			steamid3 = steamID64_From_SteamID3(id);
-			result = 'https://steamcommunity.com/profiles/' + String(steamid3);
+			result = 'http://dotamax.com/player/hero/' + id;
 		}
-		else if (currSite == ID_STEAM) {
-			steam_id3 = steamID3_From_SteamID64(currentPage);
-			if (String(steam_id3).indexOf('-') >= 0)
-				result = currentPage;
-			else
-				result = "http://www." + getPlayerPredicate(targetSite) + steam_id3;
+		else if(currSite == ID_DOTAMAX) {
+			id = getPlayerID(currentPage, currSite);
+			result = 'https://' + getPlayerPredicate(currSite) + id + '/heroes'
 		}
 		else
 			result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
 	}
 
 	return result;
-}
+} // end playerHeroStatsPageLogic()
 
 // ============================ //
 // ===== HELPER FUNCTIONS ===== //
@@ -239,6 +270,17 @@ function getPlayerPredicate(targetSite) {
 
 	return result;
 } // end getPlayerPredicate()
+
+// ***** PLAYER HERO STATS ***** //
+function isPlayerHeroStatsPage(currentPage) {
+	//if(isPlayerPage(currentPage)) { // this was a redundant check -- all player hero pages are also player pages
+		if (currentPage.includes('/hero/') || currentPage.includes('/heroes')) {
+			return true;
+		}
+	//}
+
+	return false;
+}
 
 // ================================= //
 // ===== INIT / BUTTON BINDING ===== //
