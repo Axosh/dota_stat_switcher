@@ -2,9 +2,9 @@
 	"name": "DOTA 2 Stat Switcher",
 	"description": "Switch between dota stat site pages",
 	"version": "0.1",
-	"permissions": ["storage", "tabs"],
+	"permissions": ["storage", "tabs", "https://www.steamcommunity.com/", "https://steamcommunity.com/"],
 	"background": {
-	    "scripts": ["background.js"],
+	    "scripts": ["jquery-3.4.1.min.js", "background.js"],
 	    "persistent": false
 	  },
 	"browser_action": {

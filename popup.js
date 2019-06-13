@@ -14,6 +14,8 @@ var ID_GOSUAI = 'ga';
 // ============================== //
 
 var myURL = "";
+var xmlDoc ="";
+var steamid64 = "";
 
 // change to current page on different site (same tab)
 function switchPage(event) {
@@ -74,8 +76,13 @@ function getDestination(targetSite) {
 			steamid3 = steamID64_From_SteamID3(id);
 			result = 'https://steamcommunity.com/profiles/' + String(steamid3);
 		}
-		else if (currSite == ID_STEAM)
-			result = "";
+		else if (currSite == ID_STEAM) {
+			steam_id3 = steamID3_From_SteamID64(currentPage);
+			if (String(steam_id3).indexOf('-') >= 0)
+				result = currentPage;
+			else
+				result = "http://www." + getPlayerPredicate(targetSite) + steam_id3;
+		}
 		else
 			result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
 	}
@@ -106,8 +113,30 @@ function steamID64_From_SteamID3(id) {
 
 //Also if you ever wanna be able to go from steam profile, you just do ?xml=1 on the profile, get the ID64 And convert to ID3
 //https://github.com/arhi3a/Steam-ID-Converter/blob/master/steam_id_converter.py
-function steamID3_From_SteamID64(id) {
+function steamID3_From_SteamID64(steam_url) {
+	//steamid64 = "";
+	steam_url = steam_url + "?xml=1";
 
+	$.ajax({
+        url: steam_url,
+        beforeSend: function(xhr) {
+             xhr.setRequestHeader("Authorization", "Bearer 6QXNMEMFHNY4FJ5ELNFMP5KRW52WFXN5")
+        }, success: function(data){
+        	parser = new DOMParser();
+            //alert(data);
+            var a = data.getElementsByTagName("steamID64")[0].childNodes[0].nodeValue;
+            //alert(a);
+            steamid64 = a;
+            //xmlDoc = parser.parseFromString(data,"text/xml");
+            //process the JSON data etc
+            //steamid64 = xmlDoc.getElementsByTagName("steamID64")[0].childNodes[0].nodeValue;
+        	}
+	});
+
+	// https://stackoverflow.com/questions/23259260/convert-64-bit-steam-id-to-32-bit-account-id
+	steamid3 = (Number(steamid64.substr(-16,16)) - 6561197960265728);
+
+	return steamid3;
 }
 
 function getPlayerID(currentURL, currentSite) {
@@ -199,6 +228,8 @@ function getPlayerPredicate(targetSite) {
 			result = 'dotamax.com/player/detail/';
 			break;
 		case ID_STEAM:
+			//NOTE: This could also be steamcommunity.com/id/{somename} -- we'll handle that elsewhere in terms
+			//		of getting SteamID3 to go to another page from a steam account
 			result = 'steamcommunity.com/profiles/';
 			break;
 		case ID_GOSUAI:
@@ -209,9 +240,9 @@ function getPlayerPredicate(targetSite) {
 	return result;
 } // end getPlayerPredicate()
 
-// ================ //
-// ===== INIT ===== //
-// ================ //
+// ================================= //
+// ===== INIT / BUTTON BINDING ===== //
+// ================================= //
 
 document.getElementById('dotabuff_switch').addEventListener('click', switchPage);
 document.getElementById('opendota_switch').addEventListener('click', switchPage);
