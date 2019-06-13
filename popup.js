@@ -1,3 +1,14 @@
+// ===================== //
+// ===== CONSTANTS ===== //
+// ===================== //
+
+var ID_DOTABUFF = 'db';
+var ID_OPENDOTA = 'od';
+var ID_STRATZ = 'sz';
+var ID_DOTAMAX = 'dx';
+var ID_STEAM = 'sm';
+var ID_GOSUAI = 'ga';
+
 // ============================== //
 // ===== MAIN FUNCTIONALITY ===== //
 // ============================== //
@@ -12,6 +23,15 @@ function switchPage(event) {
 
 	destination = getDestination(targetSite);
 
+	if(destination == false || destination == "ERROR")
+		return;
+
+	// dotamax cert is dead
+	if(targetSite == ID_DOTAMAX)
+		destination = destination.replace('https://', 'http://');
+	else
+		destination = destination.replace('http://', 'https://');
+
 	setCurrentURL(destination);
 	//window.location.replace(destination);
 }
@@ -23,6 +43,15 @@ function newTab(event) {
 		targetSite = event.target.parentNode.value;
 
 	destination = getDestination(targetSite);
+
+	if(destination == false || destination == "ERROR")
+		return;
+
+	// dotamax cert is dead
+	if(targetSite == ID_DOTAMAX)
+		destination.replace('https://', 'http://');
+	else
+		destination.replace('http://', 'https://');
 
 	window.open(destination, '_blank');
 }
@@ -39,8 +68,16 @@ function getDestination(targetSite) {
 
 	if (isPlayerPage(currentPage))
 	{
-		result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
-		console.log(result);
+		// do special conversions for steam
+		if(targetSite == ID_STEAM) {
+			id = getPlayerID(currentPage, currSite);
+			steamid3 = steamID64_From_SteamID3(id);
+			result = 'https://steamcommunity.com/profiles/' + String(steamid3);
+		}
+		else if (currSite == ID_STEAM)
+			result = "";
+		else
+			result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
 	}
 
 	return result;
@@ -49,6 +86,41 @@ function getDestination(targetSite) {
 // ============================ //
 // ===== HELPER FUNCTIONS ===== //
 // ============================ //
+
+// https://www.reddit.com/r/Steam/comments/3yoduu/converting_steamid3_to_older_steamid/?st=jabmvb84&sh=29e0634f
+function steamID64_From_SteamID3(id) {
+	modifier = 0;
+	base = 0;
+
+	if (id % 2 == 0) {
+		modifier = 0;
+		base = id / 2;
+	}
+	else {
+		modifier = 1;
+		base = (id - 1) / 2;
+	}
+
+	return "7656119" + String((base * 2) + (7960265728 + modifier));
+}
+
+//Also if you ever wanna be able to go from steam profile, you just do ?xml=1 on the profile, get the ID64 And convert to ID3
+//https://github.com/arhi3a/Steam-ID-Converter/blob/master/steam_id_converter.py
+function steamID3_From_SteamID64(id) {
+
+}
+
+function getPlayerID(currentURL, currentSite) {
+	player_url_chunk = getPlayerPredicate(currentSite);
+	startIndex = currentURL.indexOf(player_url_chunk) + player_url_chunk.length;
+	endIndex = currentURL.indexOf('/', startIndex);
+
+	if(endIndex == -1)
+		result = currentURL.substring(startIndex);
+	else
+		result = currentURL.substring(startIndex, endIndex);
+	return result;
+}
 
 function getCurrentURL() {
 	var result = "";
@@ -79,13 +151,18 @@ function getCurrSite(currentPage) {
 	result = 'ERROR';
 
 	if (currentPage.includes('dotabuff.com'))
-		result = 'db';
+		result = ID_DOTABUFF;
 	else if  (currentPage.includes('opendota.com'))
-		result = 'od';
+		result = ID_OPENDOTA;
 	else if  (currentPage.includes('stratz.com'))
-		result = 'sz';
+		result = ID_STRATZ;
 	else if  (currentPage.includes('dotamax.com'))
-		result = 'dm';
+		result = ID_DOTAMAX;
+	else if  (currentPage.includes('steamcommunity.com'))
+		result = ID_STEAM;
+	else if  (currentPage.includes('gosu.ai'))
+		result = ID_GOSUAI;
+
 
 	return result;
 }
@@ -96,7 +173,7 @@ function getCurrSite(currentPage) {
 function isPlayerPage(currentPage) {
 	result = false;
 
-	if(currentPage.includes('/players/') || currentPage.includes('/player/'))
+	if(currentPage.includes('/players/') || currentPage.includes('/player/') || currentPage.includes('steamcommunity.com/profiles/') || currentPage.includes('steamcommunity.com/id/'))
 		result = true;
 
 	return result;
@@ -105,17 +182,27 @@ function isPlayerPage(currentPage) {
 function getPlayerPredicate(targetSite) {
 	result = "";
 	switch (targetSite) {
-		case 'db':
-			result = 'https://www.dotabuff.com/players/';
+		case ID_DOTABUFF:
+			//result = 'https://www.dotabuff.com/players/';
+			result = 'dotabuff.com/players/';
 			break;
-		case 'od':
-			result = 'https://www.opendota.com/players/';
+		case ID_OPENDOTA:
+			//result = 'https://www.opendota.com/players/';
+			result = 'opendota.com/players/';
 			break;
-		case 'sz':
-			result = 'https://stratz.com/en-us/player/';
+		case ID_STRATZ:
+			//result = 'https://stratz.com/en-us/player/';
+			result = 'stratz.com/en-us/player/';
 			break;
-		case 'dm':
-			result = 'http://dotamax.com/player/detail/';
+		case ID_DOTAMAX:
+			//result = 'http://dotamax.com/player/detail/';
+			result = 'dotamax.com/player/detail/';
+			break;
+		case ID_STEAM:
+			result = 'steamcommunity.com/profiles/';
+			break;
+		case ID_GOSUAI:
+			result = 'gosu.ai/platform/dota/summary/';
 			break;
 	} // end switch
 
@@ -130,8 +217,12 @@ document.getElementById('dotabuff_switch').addEventListener('click', switchPage)
 document.getElementById('opendota_switch').addEventListener('click', switchPage);
 document.getElementById('stratz_switch').addEventListener('click', switchPage);
 document.getElementById('dotamax_switch').addEventListener('click', switchPage);
+document.getElementById('steam_switch').addEventListener('click', switchPage);
+document.getElementById('gosuai_switch').addEventListener('click', switchPage);
 
 document.getElementById('dotabuff_newtab').addEventListener('click', newTab);
 document.getElementById('opendota_newtab').addEventListener('click', newTab);
 document.getElementById('stratz_newtab').addEventListener('click', newTab);
 document.getElementById('dotamax_newtab').addEventListener('click', newTab);
+document.getElementById('steam_newtab').addEventListener('click', newTab);
+document.getElementById('gosuai_newtab').addEventListener('click', newTab);
