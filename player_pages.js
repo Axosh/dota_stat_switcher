@@ -14,16 +14,16 @@ function playerPageLogic(currentPage, targetSite, currSite) {
 		if (String(steam_id3).indexOf('-') >= 0)
 			result = currentPage;
 		else
-			result = "http://www." + getPlayerPredicate(targetSite) + steam_id3;
+			result = "http://www." + getPlayerBase(targetSite) + steam_id3;
 	}
 	else
 	{
-		//result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
+		//result = currentPage.replace(getPlayerBase(currSite), getPlayerBase(targetSite));
 		//build fresh in case they have query string params
 		if(targetSite == ID_DOTAMAX)
-			result = "http://www." + getPlayerPredicate(targetSite) + id;
+			result = "http://www." + getPlayerBase(targetSite) + id;
 		else
-			result = "https://www." + getPlayerPredicate(targetSite) + id;
+			result = "https://www." + getPlayerBase(targetSite) + id;
 	}
 
 	return result;
@@ -34,21 +34,21 @@ function playerHeroStatsPageLogic(currentPage, targetSite, currSite) {
 	id = getPlayerID(currentPage, currSite);
 
 	if(targetSite == ID_STEAM)
-		return result;
+		return "ERROR";
 	else {
 		if(targetSite == ID_DOTAMAX) {
 			result = 'http://dotamax.com/player/hero/' + id;
 		}
 		else
 		{
-			result = "https://" + getPlayerPredicate(targetSite) + id + "/heroes";
+			result = "https://" + getPlayerBase(targetSite) + id + "/heroes";
 		}
 		//else if(currSite == ID_DOTAMAX) {
 		//	id = getPlayerID(currentPage, currSite);
-		//	result = 'https://' + getPlayerPredicate(currSite) + id + '/heroes'
+		//	result = 'https://' + getPlayerBase(currSite) + id + '/heroes'
 		//}
 		//else
-		//	result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
+		//	result = currentPage.replace(getPlayerBase(currSite), getPlayerBase(targetSite));
 	}
 
 	return result;
@@ -65,7 +65,7 @@ function isPlayerPage(currentPage) {
 	return result;
 } // end isPlayerPage()
 
-function getPlayerPredicate(targetSite) {
+function getPlayerBase(targetSite) {
 	result = "";
 	switch (targetSite) {
 		case ID_DOTABUFF:
@@ -84,6 +84,9 @@ function getPlayerPredicate(targetSite) {
 			//result = 'http://dotamax.com/player/detail/';
 			result = 'dotamax.com/player/detail/';
 			break;
+		case ID_DATDOTA:
+				result = 'datdota.com/players/';
+				break;
 		case ID_STEAM:
 			//NOTE: This could also be steamcommunity.com/id/{somename} -- we'll handle that elsewhere in terms
 			//		of getting SteamID3 to go to another page from a steam account
@@ -95,7 +98,7 @@ function getPlayerPredicate(targetSite) {
 	} // end switch
 
 	return result;
-} // end getPlayerPredicate()
+} // end getPlayerBase()
 
 // ***** PLAYER HERO STATS ***** //
 

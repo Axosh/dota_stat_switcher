@@ -83,6 +83,8 @@ function getDestination(targetSite) {
 		{
 			result = matchPageLogic(currentPage, targetSite, currSite);
 		}
+		else if(isLeaguesPage(currentPage) && targetSite != ID_OPENDOTA)
+			result = esportsPageLogic(currentPage, targetSite, currSite);
 	}
 
 	return result;
@@ -138,7 +140,7 @@ function steamID3_From_SteamID64(steam_url) {
 }
 
 function getPlayerID(currentURL, currentSite) {
-	player_url_chunk = getPlayerPredicate(currentSite);
+	player_url_chunk = getPlayerBase(currentSite);
 	startIndex = currentURL.indexOf(player_url_chunk) + player_url_chunk.length;
 	endIndex = currentURL.indexOf('/', startIndex);
 
@@ -150,7 +152,7 @@ function getPlayerID(currentURL, currentSite) {
 }
 
 function getMatchID(currentURL, currentSite) {
-	match_url_chunk = getMatchStatsPredicate(currentSite);
+	match_url_chunk = getMatchStatsBase(currentSite);
 	startIndex = currentURL.indexOf(match_url_chunk) + match_url_chunk.length;
 	endIndex = currentURL.indexOf('/', startIndex);
 
@@ -204,100 +206,6 @@ function getCurrSite(currentPage) {
 	//else if  (currentPage.includes('gosu.ai'))
 	//	result = ID_GOSUAI;
 
-
-	return result;
-}
-
-// ***** PLAYER PAGES ***** //
-
-// detect if url is that of a player pub profile page
-function isPlayerPage(currentPage) {
-	result = false;
-
-	if(currentPage.includes('/players/') || currentPage.includes('/player/') || currentPage.includes('steamcommunity.com/profiles/') || currentPage.includes('steamcommunity.com/id/'))
-		result = true;
-
-	return result;
-} // end isPlayerPage()
-
-function getPlayerPredicate(targetSite) {
-	result = "";
-	switch (targetSite) {
-		case ID_DOTABUFF:
-			//result = 'https://www.dotabuff.com/players/';
-			result = 'dotabuff.com/players/';
-			break;
-		case ID_OPENDOTA:
-			//result = 'https://www.opendota.com/players/';
-			result = 'opendota.com/players/';
-			break;
-		case ID_STRATZ:
-			//result = 'https://stratz.com/en-us/player/';
-			result = 'stratz.com/en-us/player/';
-			break;
-		case ID_DOTAMAX:
-			//result = 'http://dotamax.com/player/detail/';
-			result = 'dotamax.com/player/detail/';
-			break;
-		case ID_DATDOTA:
-			result = 'datdota.com/players/';
-			break;
-		case ID_STEAM:
-			//NOTE: This could also be steamcommunity.com/id/{somename} -- we'll handle that elsewhere in terms
-			//		of getting SteamID3 to go to another page from a steam account
-			result = 'steamcommunity.com/profiles/';
-			break;
-		//case ID_GOSUAI:
-		//	result = 'gosu.ai/platform/dota/summary/';
-		//	break;
-	} // end switch
-
-	return result;
-} // end getPlayerPredicate()
-
-// ***** PLAYER HERO STATS ***** //
-
-function isPlayerHeroStatsPage(currentPage) {
-	//if(isPlayerPage(currentPage)) { // this was a redundant check -- all player hero pages are also player pages
-		if ((currentPage.includes('/hero/') || currentPage.includes('/heroes')) && !currentPage.includes('/esports')) {
-			return true;
-		}
-	//}
-
-	return false;
-}
-
-// ***** MATCH STATS ***** //
-
-function isMatchPage(currentPage) {
-	result = false;
-
-	if(currentPage.includes('/matches/') || currentPage.includes('/match/'))
-		result = true;
-
-	return result;
-}
-
-// gets base url for a match-id page
-function getMatchStatsPredicate(targetSite) {
-	result = "";
-	switch (targetSite) {
-		case ID_DOTABUFF:
-			result = 'dotabuff.com/matches/';
-			break;
-		case ID_OPENDOTA:
-			result = 'opendota.com/matches/';
-			break;
-		case ID_STRATZ:
-			result = 'stratz.com/en-us/match/';
-			break;
-		case ID_DOTAMAX:
-			result = 'dotamax.com/match/detail/';
-			break;
-		case ID_DATDOTA:
-			result = 'datdota.com/matches/';
-			break;
-	}
 
 	return result;
 }

@@ -9,11 +9,11 @@ function matchPageLogic(currentPage, targetSite, currSite) {
 	m_id = getMatchID(currentPage, currSite);
 
 	if(targetSite == ID_DOTAMAX) {
-		result = 'http://' + getMatchStatsPredicate(targetSite) + m_id;
+		result = 'http://' + getMatchStatsBase(targetSite) + m_id;
 	}
 	else
 	{
-		result = "https://" + getMatchStatsPredicate(targetSite) + m_id;
+		result = "https://" + getMatchStatsBase(targetSite) + m_id;
 	}
 
 	return result;
@@ -25,13 +25,16 @@ function isMatchPage(currentPage) {
 	result = false;
 
 	if(currentPage.includes('/matches/') || currentPage.includes('/match/'))
-		result = true;
+	{
+		if(!currentPage.includes('league'))
+			result = true;
+	}
 
 	return result;
 }
 
 // gets base url for a match-id page
-function getMatchStatsPredicate(targetSite) {
+function getMatchStatsBase(targetSite) {
 	result = "";
 	switch (targetSite) {
 		case ID_DOTABUFF:
