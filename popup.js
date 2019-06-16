@@ -7,6 +7,7 @@ var ID_OPENDOTA = 'od';
 var ID_STRATZ = 'sz';
 var ID_DOTAMAX = 'dx';
 var ID_STEAM = 'sm';
+var ID_DATDOTA = 'dd';
 //var ID_GOSUAI = 'ga';
 
 // ============================== //
@@ -82,75 +83,6 @@ function getDestination(targetSite) {
 		{
 			result = matchPageLogic(currentPage, targetSite, currSite);
 		}
-	}
-
-	return result;
-}
-
-// builds the base player page url
-function playerPageLogic(currentPage, targetSite, currSite) {
-	result = currentPage;
-	id = getPlayerID(currentPage, currSite);
-	// do special conversions for steam
-	if(targetSite == ID_STEAM) {
-		steamid3 = steamID64_From_SteamID3(id);
-		result = 'https://steamcommunity.com/profiles/' + String(steamid3);
-	}
-	else if (currSite == ID_STEAM) {
-		steam_id3 = steamID3_From_SteamID64(currentPage);
-		if (String(steam_id3).indexOf('-') >= 0)
-			result = currentPage;
-		else
-			result = "http://www." + getPlayerPredicate(targetSite) + steam_id3;
-	}
-	else
-	{
-		//result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
-		//build fresh in case they have query string params
-		if(targetSite == ID_DOTAMAX)
-			result = "http://www." + getPlayerPredicate(targetSite) + id;
-		else
-			result = "https://www." + getPlayerPredicate(targetSite) + id;
-	}
-
-	return result;
-} // end playerPageLogic()
-
-function playerHeroStatsPageLogic(currentPage, targetSite, currSite) {
-	result = currentPage;
-	id = getPlayerID(currentPage, currSite);
-
-	if(targetSite == ID_STEAM)
-		return result;
-	else {
-		if(targetSite == ID_DOTAMAX) {
-			result = 'http://dotamax.com/player/hero/' + id;
-		}
-		else
-		{
-			result = "https://" + getPlayerPredicate(targetSite) + id + "/heroes";
-		}
-		//else if(currSite == ID_DOTAMAX) {
-		//	id = getPlayerID(currentPage, currSite);
-		//	result = 'https://' + getPlayerPredicate(currSite) + id + '/heroes'
-		//}
-		//else
-		//	result = currentPage.replace(getPlayerPredicate(currSite), getPlayerPredicate(targetSite));
-	}
-
-	return result;
-} // end playerHeroStatsPageLogic()
-
-function matchPageLogic(currentPage, targetSite, currSite) {
-	result = currentPage;
-	m_id = getMatchID(currentPage, currSite);
-
-	if(targetSite == ID_DOTAMAX) {
-		result = 'http://' + getMatchStatsPredicate(targetSite) + m_id;
-	}
-	else
-	{
-		result = "https://" + getMatchStatsPredicate(targetSite) + m_id;
 	}
 
 	return result;
@@ -265,6 +197,8 @@ function getCurrSite(currentPage) {
 		result = ID_STRATZ;
 	else if  (currentPage.includes('dotamax.com'))
 		result = ID_DOTAMAX;
+	else if (currentPage.includes('datdota.com'))
+		result = ID_DATDOTA;
 	else if  (currentPage.includes('steamcommunity.com'))
 		result = ID_STEAM;
 	//else if  (currentPage.includes('gosu.ai'))
@@ -304,6 +238,9 @@ function getPlayerPredicate(targetSite) {
 		case ID_DOTAMAX:
 			//result = 'http://dotamax.com/player/detail/';
 			result = 'dotamax.com/player/detail/';
+			break;
+		case ID_DATDOTA:
+			result = 'datdota.com/players/';
 			break;
 		case ID_STEAM:
 			//NOTE: This could also be steamcommunity.com/id/{somename} -- we'll handle that elsewhere in terms
@@ -357,6 +294,9 @@ function getMatchStatsPredicate(targetSite) {
 		case ID_DOTAMAX:
 			result = 'dotamax.com/match/detail/';
 			break;
+		case ID_DATDOTA:
+			result = 'datdota.com/matches/';
+			break;
 	}
 
 	return result;
@@ -371,6 +311,7 @@ document.getElementById('opendota_switch').addEventListener('click', switchPage)
 document.getElementById('stratz_switch').addEventListener('click', switchPage);
 document.getElementById('dotamax_switch').addEventListener('click', switchPage);
 document.getElementById('steam_switch').addEventListener('click', switchPage);
+document.getElementById('datdota_switch').addEventListener('click', switchPage);
 //document.getElementById('gosuai_switch').addEventListener('click', switchPage);
 
 document.getElementById('dotabuff_newtab').addEventListener('click', newTab);
@@ -378,4 +319,5 @@ document.getElementById('opendota_newtab').addEventListener('click', newTab);
 document.getElementById('stratz_newtab').addEventListener('click', newTab);
 document.getElementById('dotamax_newtab').addEventListener('click', newTab);
 document.getElementById('steam_newtab').addEventListener('click', newTab);
+document.getElementById('datdota_newtab').addEventListener('click', newTab);
 //document.getElementById('gosuai_newtab').addEventListener('click', newTab);

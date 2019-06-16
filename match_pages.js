@@ -46,6 +46,9 @@ function getMatchStatsPredicate(targetSite) {
 		case ID_DOTAMAX:
 			result = 'dotamax.com/match/detail/';
 			break;
+		case ID_DATDOTA:
+			result = 'datdota.com/matches/';
+			break;
 	}
 
 	return result;
