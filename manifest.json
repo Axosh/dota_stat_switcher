@@ -4,7 +4,7 @@
 	"version": "0.3",
 	"permissions": ["tabs", "https://www.steamcommunity.com/", "https://steamcommunity.com/"],
 	"background": {
-	    "scripts": ["jquery-3.4.1.min.js", "background.js"],
+	    "scripts": ["background.js"],
 	    "persistent": false
 	  },
 	"browser_action": {
@@ -20,5 +20,3 @@
 	"content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
   	"manifest_version": 2
 }
-
-//"permissions": ["storage", "tabs", "https://www.steamcommunity.com/", "https://steamcommunity.com/"],
