@@ -1,6 +1,8 @@
 # dota_stat_switcher
 Chrome Extension to switch between dota 2 stat websites easily
 
+Chrome Web Store: https://chrome.google.com/webstore/detail/dota-2-stat-switcher/mbbmgafocgogdobkgojhedbpagibiklc
+
 To Demo This Locally:
 
 1. Clone Repo to your preferred location on your machine
