@@ -36,7 +36,7 @@ function getLeaguesBase(targetSite) {
             result = 'dotabuff.com/esports/leagues/';
             break;
         case ID_STRATZ:
-            result = 'stratz.com/en-us/leagues/';
+            result = 'stratz.com/leagues/';
             break;
         case ID_DOTAMAX:
             result = 'dotamax.com/match/tour/';

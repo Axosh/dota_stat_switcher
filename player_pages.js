@@ -78,7 +78,7 @@ function getPlayerBase(targetSite) {
 			break;
 		case ID_STRATZ:
 			//result = 'https://stratz.com/en-us/player/';
-			result = 'stratz.com/en-us/player/';
+			result = 'stratz.com/players/';
 			break;
 		case ID_DOTAMAX:
 			//result = 'http://dotamax.com/player/detail/';

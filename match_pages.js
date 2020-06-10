@@ -44,7 +44,7 @@ function getMatchStatsBase(targetSite) {
 			result = 'opendota.com/matches/';
 			break;
 		case ID_STRATZ:
-			result = 'stratz.com/en-us/match/';
+			result = 'stratz.com/matches/';
 			break;
 		case ID_DOTAMAX:
 			result = 'dotamax.com/match/detail/';
