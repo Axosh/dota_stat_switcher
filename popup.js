@@ -14,7 +14,7 @@ var ID_DATDOTA = 'dd';
 // ===== MAIN FUNCTIONALITY ===== //
 // ============================== //
 
-var myURL = "";
+var currTabUrl = "";
 var xmlDoc ="";
 var steamid64 = "";
 
@@ -23,7 +23,7 @@ chrome.tabs.query({
     currentWindow: true
   }, function(tabs) {
         var tab = tabs[0];
-        myURL = tab.url;
+        currTabUrl = tab.url;
       });
 
 // change to current page on different site (same tab)
@@ -33,7 +33,6 @@ function switchPage(event) {
 		targetSite = event.target.parentNode.value;
 
 	destination = getDestination(targetSite);
-	console.log("destination = " + destination);
 
 	if(destination == false || destination == "ERROR")
 		return;
@@ -74,7 +73,7 @@ function newTab(event) {
 // c) how to transform current page to new site
 function getDestination(targetSite) {
 	
-	currentPage = myURL;//getCurrentURL().then(function(value) {return value;});
+	currentPage = currTabUrl;
 	currSite = getCurrSite(currentPage);
 
 	result = currentPage;
