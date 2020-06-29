@@ -18,6 +18,14 @@ var myURL = "";
 var xmlDoc ="";
 var steamid64 = "";
 
+chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, function(tabs) {
+        var tab = tabs[0];
+        myURL = tab.url;
+      });
+
 // change to current page on different site (same tab)
 function switchPage(event) {
 	let targetSite = event.target.value;//event.target.parentNode.value;
@@ -25,6 +33,7 @@ function switchPage(event) {
 		targetSite = event.target.parentNode.value;
 
 	destination = getDestination(targetSite);
+	console.log("destination = " + destination);
 
 	if(destination == false || destination == "ERROR")
 		return;
@@ -64,7 +73,8 @@ function newTab(event) {
 // b) where site we're going to
 // c) how to transform current page to new site
 function getDestination(targetSite) {
-	currentPage = getCurrentURL();
+	
+	currentPage = myURL;//getCurrentURL().then(function(value) {return value;});
 	currSite = getCurrSite(currentPage);
 
 	result = currentPage;
@@ -161,24 +171,6 @@ function getMatchID(currentURL, currentSite) {
 	else
 		result = currentURL.substring(startIndex, endIndex);
 	return result;
-}
-
-function getCurrentURL() {
-	var result = "";
-	chrome.tabs.query({
-						  active: true,
-						  currentWindow: true
-						}, function(tabs) {
-							  var tab = tabs[0];
-							  myURL = tab.url;
-							  //console.log(result);
-							  //var url = tab.url;
-							});
-
-	//result = chrome.extension.getBackgroundPage().myURL;
-	result = myURL;
-	return result;
-	//window.location.href;
 }
 
 function setCurrentURL(newUrl) {
